@@ -18,7 +18,7 @@ export const Header = () => {
                 <Box style={{ float: 'left', width: '150px', height: '100%' }}>
                     <Grid style={{ height: '100%', alignItems: 'center' }} container xs={12}>
                         <Grid item xs>
-                            <img src='./logo.svg' alt="logo" style={{ width: '18,13px', height: '33px' }} />
+                            <img src='./logo.svg' alt="logo" style={{ width: '46px', height: '46px' }} />
                         </Grid>
                         <Grid item xs>
                             <span style={{ fontWeight: '700', fontSize: '16px' }}>Tasks</span>
