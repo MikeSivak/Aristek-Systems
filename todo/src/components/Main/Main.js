@@ -98,7 +98,7 @@ export const Main = () => {
     }
 
     // complete a ToDo
-    const completeToDo = async (id, title) => {
+    const completeToDo = (id, title) => {
         console.log('completed ToDo id: ' + id + " | title: " + title)
         axios.put(`https://jsonplaceholder.typicode.com/todos/${1}`, {
             userId: 1,
@@ -177,10 +177,11 @@ export const Main = () => {
 
     return (
         <>
-            <Box style={{ height: '708px', width: '52px', position: 'absolute', backgroundColor: '#550DC9', float: 'left' }}>
+            <Box style={{width:'52px', height:'100%', position:'absolute', backgroundColor: '#550DC9', float: 'left'}} />
+            <Box style={{ width: '52px', height: '100%', position: 'fixed', backgroundColor: '#550DC9', float: 'left' }}>
                 <img src="./Tasks.svg" alt="icon" style={{ marginTop: '24px', height: '32px' }} />
             </Box>
-            <Box>
+            <Box style={{ paddingBottom: '4em' }}>
                 <Box style={{ marginLeft: '76px' }}>
                     <Grid container xs={12} columnSpacing={8} rowSpacing={4} >
                         <Grid item xs md={8}>
@@ -228,33 +229,31 @@ export const Main = () => {
                             <Box style={{ marginTop: '16px', minWidth: '400px' }}>
                                 <Typography style={{ textAlign: 'left', fontSize: '16px', fontWeight: '600' }}>To do ({toDoList.length})</Typography>
                                 {toDoList.map((toDo) => (
-                                    <Box style={{ marginTop: '16px' }}>
-                                        <Box style={{ height: '48px', boxShadow: '0px 0px 3px rgba(0, 0, 0, 0.08)' }}>
-                                            <Box style={{ padding: '6px 12px' }}>
-                                                <FormControlLabel
-                                                    control={
-                                                        <Checkbox
-                                                            size="small"
-                                                            sx={{
-                                                                '&.Mui-checked': {
-                                                                    color: '#550DC9',
-                                                                }, color: '#ECECEC'
-                                                            }}
-                                                            onClick={() => completeToDo(toDo.id, toDo.title)}
-                                                        />
-                                                    }
-                                                    label={toDo.title}
-                                                    style={{ float: 'left', wordWrap: 'normal' }} />
-                                                <ButtonGroup style={{ float: 'right' }}>
-                                                    <IconButton onClick={() => selectToDo(toDo.id, toDo.title)}>
-                                                        <img src="./edit.png" />
-                                                    </IconButton>
-                                                    <IconButton onClick={() => handleDeleteToDoItem(toDo.id)}>
-                                                        <img src="./delete.png" />
-                                                    </IconButton>
-                                                </ButtonGroup>
-                                            </Box>
+                                    <Box style={{ marginTop: '16px', minWidth: '400px' }}>
+                                        <Box style={{ height: 'auto', padding: '6px 12px', textAlign: 'left', boxShadow: '0px 0px 3px rgba(0, 0, 0, 0.08)' }}>
+                                            <FormControlLabel
+                                                sx={{ width: '80%' }}
+                                                control={
+                                                    <Checkbox
+                                                        checked={false}
+                                                        size="small"
+                                                        sx={{ '&.Mui-checked': { color: '#550DC9', }, color: '#ECECEC' }}
+                                                        onChange={() => completeToDo(toDo.id, toDo.title)}
+                                                    />
+                                                }
+                                                label={toDo.title}
+                                                style={{ wordWrap: 'normal' }}
+                                            />
+                                            <ButtonGroup style={{ float: 'right' }}>
+                                                <IconButton onClick={() => selectToDo(toDo.id, toDo.title)}>
+                                                    <img src="./edit.png" />
+                                                </IconButton>
+                                                <IconButton onClick={() => handleDeleteToDoItem(toDo.id)}>
+                                                    <img src="./delete.png" />
+                                                </IconButton>
+                                            </ButtonGroup>
                                         </Box>
+                                        {/* </Box> */}
                                     </Box>
                                 ))}
                             </Box>
@@ -264,28 +263,26 @@ export const Main = () => {
                                 <Typography style={{ textAlign: 'left', fontSize: '16px', fontWeight: '600' }}>Completed ({completedList.length})</Typography>
                                 {completedList.map((completed) => (
                                     <Box style={{ marginTop: '16px', minWidth: '400px' }}>
-                                        <Box style={{ height:'48px', boxShadow: '0px 0px 3px rgba(0, 0, 0, 0.08)' }}>
-                                            <Box style={{ padding: '6px 12px' }}>
-                                                <FormControlLabel
-                                                    control={
-                                                        <Checkbox
-                                                            size="small"
-                                                            sx={{ '&.Mui-checked': { color: '#550DC9', }, color: '#ECECEC' }}
-                                                            defaultChecked
-                                                        />
-                                                    }
-                                                    label={completed.title}
-                                                    style={{ float: 'left', textDecoration: 'line-through', color: '#A3A3A3', wordWrap: 'normal' }}
+                                        <Box style={{ height: 'auto', textAlign: 'left', padding: '6px 12px', boxShadow: '0px 0px 3px rgba(0, 0, 0, 0.08)' }}>
+                                            <FormControlLabel
+                                                sx={{ width: '90%' }}
+                                                control={
+                                                    <Checkbox
+                                                        size="small"
+                                                        sx={{ '&.Mui-checked': { color: '#550DC9', }, color: '#ECECEC' }}
+                                                        defaultChecked
+                                                        disabled
+                                                    />
+                                                }
+                                                label={completed.title}
+                                                style={{ textDecoration: 'line-through', color: '#A3A3A3', wordWrap: 'normal' }}
+                                            />
+                                            <IconButton style={{ float: 'right' }}>
+                                                <img
+                                                    src="./delete.png"
+                                                    onClick={() => handleDeleteCompleted(completed.id)}
                                                 />
-                                                <ButtonGroup style={{ float: 'right' }}>
-                                                    <IconButton >
-                                                        <img
-                                                            src="./delete.png"
-                                                            onClick={() => handleDeleteCompleted(completed.id)}
-                                                        />
-                                                    </IconButton>
-                                                </ButtonGroup>
-                                            </Box>
+                                            </IconButton>
                                         </Box>
                                     </Box>
                                 ))}

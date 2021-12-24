@@ -7,7 +7,7 @@ const styles = {
         maxWidth: '1920px',
         minWidth: '320px',
         height: '64px',
-        boxShadow: '1px 1px 19px 1px darkgray'
+        boxShadow: '1px 1px 19px 1px darkgray',
     }
 }
 
