@@ -180,7 +180,7 @@ export const Main = () => {
             <Box style={{ width: '52px', height: '100%', position: 'fixed', backgroundColor: '#550DC9', float: 'left' }}>
                 <img src="./Tasks.svg" alt="icon" style={{ marginTop: '24px', height: '32px' }} />
             </Box>
-            <Box style={{ paddingBottom: '4em' }}>
+            <Box style={{ paddingBottom: '4em', marginTop:'88px' }}>
                 <Box style={{ marginLeft: '76px' }}>
                     <Grid container xs={12} columnSpacing={8} rowSpacing={4} >
                         <Grid item xs md={8}>
@@ -264,7 +264,7 @@ export const Main = () => {
                                     <Box style={{ marginTop: '16px', minWidth: '300px' }}>
                                         <Box style={{ height: 'auto', textAlign: 'left', padding: '6px 12px', boxShadow: '0px 0px 3px rgba(0, 0, 0, 0.08)' }}>
                                             <FormControlLabel
-                                                sx={{ width: '80%'}}
+                                                sx={{ width: '80%' }}
                                                 control={
                                                     <Checkbox
                                                         size="small"
