@@ -1,16 +1,118 @@
 import { Grid, TextField, Button, Typography, Checkbox, FormControlLabel, IconButton, ButtonGroup } from "@mui/material"
 import { Box } from "@mui/system"
-import { useState } from "react"
+import { chainPropTypes } from "@mui/utils";
+import { useEffect, useState } from "react"
+import axios from 'axios'
 
 export const Main = () => {
 
-    const [labels, setLabels] = useState(
-        [
-            'Add Icon to Dashboard',
-            'Create To-Do List',
-            'Add Icon to Das '
-        ]
-    );
+    const [newTask, setNewTask] = useState('');
+    const [toDoList, setToDoList] = useState([]);
+    const [completedList, setCompletedList] = useState([])
+
+    // entered text for create a new ToDo item
+    const handleNewTaskOnChange = (event) => {
+        setNewTask(event.target.value)
+    }
+
+    // delete item from ToDo list - DELETE
+    const handleDeleteToDoItem = (id) => {
+        console.log('Deleted Item ID: ' + id)
+        axios.delete(`https://jsonplaceholder.typicode.com/todos/${id}`)
+            .then((res) => {
+                //here can be call getToDoListByUserId() function for show updated data, but server don't save results
+                console.log(res.data)
+                setToDoList(toDoList.filter((toDo) => {
+                    return toDo.id !== id
+                }))
+            })
+            .catch((err) => {
+                console.log(err.message)
+            })
+    }
+
+    // delete item from completed ToDo list - DELETE
+    const handleDeleteCompleted = (id) => {
+        console.log('Deleted Completed ID: ' + id)
+        axios.delete(`https://jsonplaceholder.typicode.com/todos/${id}`)
+            .then((res) => {
+                //here can be call getCompletedListByUserId() function for show updated data, but server don't save results
+                console.log(res.data)
+                setCompletedList(completedList.filter((completedList) => {
+                    return completedList.id !== id
+                }))
+            })
+            .catch((err) => {
+                console.log(err.message)
+            })
+    }
+
+    // get ToDo list - GET
+    const getToDoListByUserId = async () => {
+        axios.get(`https://jsonplaceholder.typicode.com/todos?userId=${1}&completed=false`)
+            .then((res) => {
+                setToDoList(res.data)
+            })
+            .catch((err) => {
+                console.log(err.message)
+            })
+    }
+
+    // get completed ToDo list - GET
+    const getCompletedListByUserId = async () => {
+        axios.get(`https://jsonplaceholder.typicode.com/todos?userId=${1}&completed=true`)
+            .then((res) => {
+                setCompletedList(res.data)
+            })
+            .catch((err) => {
+                console.log(err.message)
+            })
+    }
+
+    // create a new ToDo - POST
+    const createToDo = async () => {
+        setNewTask('')
+        axios.post('https://jsonplaceholder.typicode.com/todos', {
+            userId: 1,
+            title: newTask,
+            completed: false
+        })
+            .then((res) => {
+                setToDoList([...toDoList, res.data])
+            })
+            .catch((err) => {
+                console.log(err.message)
+            })
+    }
+
+    // complete a ToDo
+    const completeToDo = async (id, title) => {
+        console.log('completed ToDo id: ' + id + " | title: " + title)
+        axios.put(`https://jsonplaceholder.typicode.com/todos/${1}`, {
+            userId: 1,
+            id: id,
+            title: title,
+            completed: true
+        })
+            .then((res) => {
+                //here can be call getToDoListByUserId() and getCompletedListByUserId() functions for show updated data, but server don't save results
+                console.log(res.data)
+                // delete completed ToDo from ToDo list
+                setToDoList(toDoList.filter((toDo) => {
+                    return toDo.id !== id
+                }))
+                // add a completed ToDo to compated ToDo list
+                setCompletedList([...completedList, res.data])
+            })
+            .catch((err) => {
+                console.log(err.message)
+            })
+    }
+
+    useEffect(() => {
+        getToDoListByUserId()
+        getCompletedListByUserId()
+    }, [])
 
     return (
         <>
@@ -24,34 +126,54 @@ export const Main = () => {
                             <Box style={{ minWidth: '400px' }}>
                                 <Grid container xs={12}>
                                     <Grid item xs>
-                                        <TextField fullWidth size="small" placeholder="+ Add a task, press Enter to save"></TextField>
-                                        <Typography style={{ float: 'left', backgroundColor: '#FEF6FF', minWidth: '50px', maxWidth: '100px', fontSize: '12px', marginTop: '12px' }}>Total: 7</Typography>
+                                        <TextField
+                                            fullWidth
+                                            size="small"
+                                            placeholder="+ Add a task, press Enter to save"
+                                            value={newTask}
+                                            onChange={handleNewTaskOnChange}
+                                        ></TextField>
+                                        <Typography style={{ float: 'left', backgroundColor: '#FEF6FF', minWidth: '50px', maxWidth: '100px', fontSize: '12px', marginTop: '12px' }}>Total: {toDoList.length + completedList.length}</Typography>
                                     </Grid>
                                     <Grid item ml={2}>
-                                        <Button variant="contained" style={{ textTransform: 'none', fontSize: '16px', backgroundColor: '#550DC9' }}>Add</Button>
+                                        <Button
+                                            variant="contained"
+                                            style={{
+                                                textTransform: 'none',
+                                                fontSize: '16px',
+                                                backgroundColor: '#550DC9'
+                                            }}
+                                            onClick={() => createToDo()}
+                                        >
+                                            Add</Button>
                                     </Grid>
                                 </Grid>
                             </Box>
                             <Box style={{ marginTop: '16px', minWidth: '400px' }}>
-                                <Typography style={{ textAlign: 'left', fontSize: '16px', fontWeight: '600' }}>To do (3)</Typography>
-                                {labels.map((label) => (
+                                <Typography style={{ textAlign: 'left', fontSize: '16px', fontWeight: '600' }}>To do ({toDoList.length})</Typography>
+                                {toDoList.map((toDo) => (
                                     <Box style={{ marginTop: '16px' }}>
-                                        <Box style={{ height: '48px', boxShadow: '0px 0px 3px rgba(0, 0, 0, 0.08)' }}>
+                                        <Box style={{ minHeight: '48px', boxShadow: '0px 0px 3px rgba(0, 0, 0, 0.08)' }}>
                                             <Box style={{ padding: '6px 12px' }}>
                                                 <FormControlLabel
                                                     control={
                                                         <Checkbox
                                                             size="small"
-                                                            sx={{ '&.Mui-checked': { color: '#550DC9', }, color: '#ECECEC' }}
+                                                            sx={{
+                                                                '&.Mui-checked': {
+                                                                    color: '#550DC9',
+                                                                }, color: '#ECECEC'
+                                                            }}
+                                                            onClick={() => completeToDo(toDo.id, toDo.title)}
                                                         />
                                                     }
-                                                    label={label}
+                                                    label={toDo.title}
                                                     style={{ float: 'left' }} />
                                                 <ButtonGroup style={{ float: 'right' }}>
                                                     <IconButton >
                                                         <img src="./edit.png" />
                                                     </IconButton>
-                                                    <IconButton >
+                                                    <IconButton onClick={() => handleDeleteToDoItem(toDo.id)}>
                                                         <img src="./delete.png" />
                                                     </IconButton>
                                                 </ButtonGroup>
@@ -63,8 +185,8 @@ export const Main = () => {
                         </Grid>
                         <Grid item xs md={4}>
                             <Box>
-                                <Typography style={{ textAlign: 'left', fontSize: '16px', fontWeight: '600' }}>Completed (4)</Typography>
-                                {labels.map((label) => (
+                                <Typography style={{ textAlign: 'left', fontSize: '16px', fontWeight: '600' }}>Completed ({completedList.length})</Typography>
+                                {completedList.map((completed) => (
                                     <Box style={{ marginTop: '16px', minWidth: '400px' }}>
                                         <Box style={{ height: '48px', boxShadow: '0px 0px 3px rgba(0, 0, 0, 0.08)' }}>
                                             <Box style={{ padding: '6px 12px' }}>
@@ -73,14 +195,18 @@ export const Main = () => {
                                                         <Checkbox
                                                             size="small"
                                                             sx={{ '&.Mui-checked': { color: '#550DC9', }, color: '#ECECEC' }}
+                                                            defaultChecked
                                                         />
                                                     }
-                                                    label={label}
-                                                    style={{ float: 'left' }}
+                                                    label={completed.title}
+                                                    style={{ float: 'left', textDecoration: 'line-through', color: '#A3A3A3' }}
                                                 />
                                                 <ButtonGroup style={{ float: 'right' }}>
                                                     <IconButton >
-                                                        <img src="./delete.png" />
+                                                        <img
+                                                            src="./delete.png"
+                                                            onClick={() => handleDeleteCompleted(completed.id)}
+                                                        />
                                                     </IconButton>
                                                 </ButtonGroup>
                                             </Box>
