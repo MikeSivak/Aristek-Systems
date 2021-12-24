@@ -231,7 +231,7 @@ export const Main = () => {
                                     <Box style={{ marginTop: '16px', minWidth: '240px' }}>
                                         <Box style={{ height: 'auto', padding: '6px 12px', textAlign: 'left', boxShadow: '0px 0px 3px rgba(0, 0, 0, 0.08)' }}>
                                             <FormControlLabel
-                                                sx={{ width: '80%' }}
+                                                sx={{ width: '65%' }}
                                                 control={
                                                     <Checkbox
                                                         checked={false}
@@ -264,7 +264,7 @@ export const Main = () => {
                                     <Box style={{ marginTop: '16px', minWidth: '240px' }}>
                                         <Box style={{ height: 'auto', textAlign: 'left', padding: '6px 12px', boxShadow: '0px 0px 3px rgba(0, 0, 0, 0.08)' }}>
                                             <FormControlLabel
-                                                sx={{ width: '90%'}}
+                                                sx={{ width: '80%'}}
                                                 control={
                                                     <Checkbox
                                                         size="small"
