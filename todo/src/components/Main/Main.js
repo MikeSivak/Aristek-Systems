@@ -184,14 +184,14 @@ export const Main = () => {
                 <Box style={{ marginLeft: '76px' }}>
                     <Grid container xs={12} columnSpacing={8} rowSpacing={4} >
                         <Grid item xs md={8}>
-                            <Box style={{ minWidth: '240px' }}>
+                            <Box style={{ minWidth: '300px' }}>
                                 <Grid container xs={12}>
                                     <Grid item xs>
                                         <TextField
                                             fullWidth
                                             helperText={emptyError}
                                             size="small"
-                                            placeholder="+ Add a task, press Enter to save *"
+                                            placeholder="+ Add a task, press Add to save *"
                                             value={newTask}
                                             onChange={handleNewTaskOnChange}
                                         ></TextField>
@@ -225,10 +225,10 @@ export const Main = () => {
                                     </Grid>
                                 </Grid>
                             </Box>
-                            <Box style={{ marginTop: '16px', minWidth: '240px' }}>
+                            <Box style={{ marginTop: '16px', minWidth: '300px' }}>
                                 <Typography style={{ textAlign: 'left', fontSize: '16px', fontWeight: '600' }}>To do ({toDoList.length})</Typography>
                                 {toDoList.map((toDo) => (
-                                    <Box style={{ marginTop: '16px', minWidth: '240px' }}>
+                                    <Box style={{ marginTop: '16px', minWidth: '300px' }}>
                                         <Box style={{ height: 'auto', padding: '6px 12px', textAlign: 'left', boxShadow: '0px 0px 3px rgba(0, 0, 0, 0.08)' }}>
                                             <FormControlLabel
                                                 sx={{ width: '65%' }}
@@ -261,7 +261,7 @@ export const Main = () => {
                             <Box>
                                 <Typography style={{ textAlign: 'left', fontSize: '16px', fontWeight: '600' }}>Completed ({completedList.length})</Typography>
                                 {completedList.map((completed) => (
-                                    <Box style={{ marginTop: '16px', minWidth: '240px' }}>
+                                    <Box style={{ marginTop: '16px', minWidth: '300px' }}>
                                         <Box style={{ height: 'auto', textAlign: 'left', padding: '6px 12px', boxShadow: '0px 0px 3px rgba(0, 0, 0, 0.08)' }}>
                                             <FormControlLabel
                                                 sx={{ width: '80%'}}
