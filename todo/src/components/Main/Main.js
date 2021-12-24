@@ -1,5 +1,5 @@
 import { Grid, TextField, Button, Typography, Checkbox, FormControlLabel, IconButton, ButtonGroup } from "@mui/material"
-import { Box } from "@mui/system"
+import { Box, minWidth } from "@mui/system"
 import { chainPropTypes } from "@mui/utils";
 import { useDebugValue, useEffect, useState } from "react"
 import axios from 'axios'
@@ -177,7 +177,6 @@ export const Main = () => {
 
     return (
         <>
-            <Box style={{width:'52px', height:'100%', position:'absolute', backgroundColor: '#550DC9', float: 'left'}} />
             <Box style={{ width: '52px', height: '100%', position: 'fixed', backgroundColor: '#550DC9', float: 'left' }}>
                 <img src="./Tasks.svg" alt="icon" style={{ marginTop: '24px', height: '32px' }} />
             </Box>
@@ -185,7 +184,7 @@ export const Main = () => {
                 <Box style={{ marginLeft: '76px' }}>
                     <Grid container xs={12} columnSpacing={8} rowSpacing={4} >
                         <Grid item xs md={8}>
-                            <Box style={{ minWidth: '400px' }}>
+                            <Box style={{ minWidth: '240px' }}>
                                 <Grid container xs={12}>
                                     <Grid item xs>
                                         <TextField
@@ -226,10 +225,10 @@ export const Main = () => {
                                     </Grid>
                                 </Grid>
                             </Box>
-                            <Box style={{ marginTop: '16px', minWidth: '400px' }}>
+                            <Box style={{ marginTop: '16px', minWidth: '240px' }}>
                                 <Typography style={{ textAlign: 'left', fontSize: '16px', fontWeight: '600' }}>To do ({toDoList.length})</Typography>
                                 {toDoList.map((toDo) => (
-                                    <Box style={{ marginTop: '16px', minWidth: '400px' }}>
+                                    <Box style={{ marginTop: '16px', minWidth: '240px' }}>
                                         <Box style={{ height: 'auto', padding: '6px 12px', textAlign: 'left', boxShadow: '0px 0px 3px rgba(0, 0, 0, 0.08)' }}>
                                             <FormControlLabel
                                                 sx={{ width: '80%' }}
@@ -262,10 +261,10 @@ export const Main = () => {
                             <Box>
                                 <Typography style={{ textAlign: 'left', fontSize: '16px', fontWeight: '600' }}>Completed ({completedList.length})</Typography>
                                 {completedList.map((completed) => (
-                                    <Box style={{ marginTop: '16px', minWidth: '400px' }}>
+                                    <Box style={{ marginTop: '16px', minWidth: '240px' }}>
                                         <Box style={{ height: 'auto', textAlign: 'left', padding: '6px 12px', boxShadow: '0px 0px 3px rgba(0, 0, 0, 0.08)' }}>
                                             <FormControlLabel
-                                                sx={{ width: '90%' }}
+                                                sx={{ width: '90%'}}
                                                 control={
                                                     <Checkbox
                                                         size="small"
