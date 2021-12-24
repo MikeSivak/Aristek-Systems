@@ -1,17 +1,21 @@
 import { Grid, TextField, Button, Typography, Checkbox, FormControlLabel, IconButton, ButtonGroup } from "@mui/material"
 import { Box } from "@mui/system"
 import { chainPropTypes } from "@mui/utils";
-import { useEffect, useState } from "react"
+import { useDebugValue, useEffect, useState } from "react"
 import axios from 'axios'
 
 export const Main = () => {
 
     const [newTask, setNewTask] = useState('');
+    const [emptyError, setEmptyError] = useState('')
     const [toDoList, setToDoList] = useState([]);
-    const [completedList, setCompletedList] = useState([])
+    const [completedList, setCompletedList] = useState([]);
+    const [editState, setEditState] = useState(false);
+    const [editItem, setEditItem] = useState({});
 
     // entered text for create a new ToDo item
     const handleNewTaskOnChange = (event) => {
+        setEmptyError('');
         setNewTask(event.target.value)
     }
 
@@ -71,18 +75,26 @@ export const Main = () => {
 
     // create a new ToDo - POST
     const createToDo = async () => {
-        setNewTask('')
-        axios.post('https://jsonplaceholder.typicode.com/todos', {
-            userId: 1,
-            title: newTask,
-            completed: false
-        })
-            .then((res) => {
-                setToDoList([...toDoList, res.data])
+        if (newTask) {
+            setEmptyError('')
+            setNewTask('')
+            axios.post('https://jsonplaceholder.typicode.com/todos', {
+                userId: 1,
+                title: newTask,
+                completed: false
             })
-            .catch((err) => {
-                console.log(err.message)
-            })
+                .then((res) => {
+                    setToDoList([...toDoList, res.data])
+                })
+                .catch((err) => {
+                    console.log(err.message)
+                })
+        }
+        else {
+            setEmptyError(<span style={{ color: 'red' }}>Fill in the field.</span>)
+            console.log("Заполните поле!")
+        }
+
     }
 
     // complete a ToDo
@@ -109,6 +121,55 @@ export const Main = () => {
             })
     }
 
+    // edit an item of ToDo list
+    const selectToDo = (id, title) => {
+        console.log('For Update -> ID: ' + id + " | TITLE: " + title)
+        setNewTask(title);
+        setEditState(true);
+        setEditItem({ userId: 1, id: id, title: title, completed: false });
+    }
+
+    const saveToDo = () => {
+        if (newTask) {
+            setEmptyError('')
+            setNewTask('')
+            setEditState(false)
+
+            axios.put(`https://jsonplaceholder.typicode.com/todos/${editItem.id}`, {
+                userId: 1,
+                id: 1,
+                title: newTask,
+                completed: false
+            })
+                .then((res) => {
+                    //here can be call getToDoListByUserId() function for show ToDo list with updated item, but server don't save results
+                    console.log(res.data)
+                })
+                .catch((err) => {
+                    console.log(err.message)
+                })
+
+            // temporary array of ToDo list objects for update selected ToDo item
+            const tempToDoList = [...toDoList];
+
+            // search an object which equal with selected by ToDo id
+            for (let i in tempToDoList) {
+                if (tempToDoList[i].id == editItem.id) {
+                    // set a new value for selected ToDo item for update
+                    tempToDoList[i] = { userId: 1, id: editItem.id, title: newTask, completed: false }
+                }
+            }
+
+            // reset a toDoList with updated ToDo item
+            setToDoList(tempToDoList);
+        }
+        else {
+            setEmptyError(<span style={{ color: 'red' }}>Fill in the field.</span>)
+            console.log('Заполните поле!')
+        }
+
+    }
+
     useEffect(() => {
         getToDoListByUserId()
         getCompletedListByUserId()
@@ -128,24 +189,39 @@ export const Main = () => {
                                     <Grid item xs>
                                         <TextField
                                             fullWidth
+                                            helperText={emptyError}
                                             size="small"
-                                            placeholder="+ Add a task, press Enter to save"
+                                            placeholder="+ Add a task, press Enter to save *"
                                             value={newTask}
                                             onChange={handleNewTaskOnChange}
                                         ></TextField>
                                         <Typography style={{ float: 'left', backgroundColor: '#FEF6FF', minWidth: '50px', maxWidth: '100px', fontSize: '12px', marginTop: '12px' }}>Total: {toDoList.length + completedList.length}</Typography>
                                     </Grid>
                                     <Grid item ml={2}>
-                                        <Button
-                                            variant="contained"
-                                            style={{
-                                                textTransform: 'none',
-                                                fontSize: '16px',
-                                                backgroundColor: '#550DC9'
-                                            }}
-                                            onClick={() => createToDo()}
-                                        >
-                                            Add</Button>
+                                        {
+                                            !editState
+                                                ? <Button
+                                                    variant="contained"
+                                                    style={{
+                                                        textTransform: 'none',
+                                                        fontSize: '16px',
+                                                        backgroundColor: '#550DC9'
+                                                    }}
+                                                    onClick={() => createToDo()}
+                                                >
+                                                    Add</Button>
+                                                : <Button
+                                                    variant="contained"
+                                                    style={{
+                                                        textTransform: 'none',
+                                                        fontSize: '16px',
+                                                        backgroundColor: '#550DC9'
+                                                    }}
+                                                    onClick={() => saveToDo()}
+                                                >
+                                                    Save</Button>
+                                        }
+
                                     </Grid>
                                 </Grid>
                             </Box>
@@ -153,7 +229,7 @@ export const Main = () => {
                                 <Typography style={{ textAlign: 'left', fontSize: '16px', fontWeight: '600' }}>To do ({toDoList.length})</Typography>
                                 {toDoList.map((toDo) => (
                                     <Box style={{ marginTop: '16px' }}>
-                                        <Box style={{ minHeight: '48px', boxShadow: '0px 0px 3px rgba(0, 0, 0, 0.08)' }}>
+                                        <Box style={{ height: '48px', boxShadow: '0px 0px 3px rgba(0, 0, 0, 0.08)' }}>
                                             <Box style={{ padding: '6px 12px' }}>
                                                 <FormControlLabel
                                                     control={
@@ -168,9 +244,9 @@ export const Main = () => {
                                                         />
                                                     }
                                                     label={toDo.title}
-                                                    style={{ float: 'left' }} />
+                                                    style={{ float: 'left', wordWrap: 'normal' }} />
                                                 <ButtonGroup style={{ float: 'right' }}>
-                                                    <IconButton >
+                                                    <IconButton onClick={() => selectToDo(toDo.id, toDo.title)}>
                                                         <img src="./edit.png" />
                                                     </IconButton>
                                                     <IconButton onClick={() => handleDeleteToDoItem(toDo.id)}>
@@ -188,7 +264,7 @@ export const Main = () => {
                                 <Typography style={{ textAlign: 'left', fontSize: '16px', fontWeight: '600' }}>Completed ({completedList.length})</Typography>
                                 {completedList.map((completed) => (
                                     <Box style={{ marginTop: '16px', minWidth: '400px' }}>
-                                        <Box style={{ height: '48px', boxShadow: '0px 0px 3px rgba(0, 0, 0, 0.08)' }}>
+                                        <Box style={{ height:'48px', boxShadow: '0px 0px 3px rgba(0, 0, 0, 0.08)' }}>
                                             <Box style={{ padding: '6px 12px' }}>
                                                 <FormControlLabel
                                                     control={
@@ -199,7 +275,7 @@ export const Main = () => {
                                                         />
                                                     }
                                                     label={completed.title}
-                                                    style={{ float: 'left', textDecoration: 'line-through', color: '#A3A3A3' }}
+                                                    style={{ float: 'left', textDecoration: 'line-through', color: '#A3A3A3', wordWrap: 'normal' }}
                                                 />
                                                 <ButtonGroup style={{ float: 'right' }}>
                                                     <IconButton >
